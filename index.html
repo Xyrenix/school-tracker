@@ -293,7 +293,7 @@
 
         <div class="actions">
           <button class="primary" id="addTask">Add task</button>
-          <button id="clearTasks">Delete all tasks</button>
+          <button id="clearTasks">Clear fields</button>
         </div>
       </div>
     </div>
@@ -485,11 +485,13 @@
     renderTasks();
   });
 
-  els.clearTasks.addEventListener("click", () => {
-    if (!confirm("Delete ALL tasks?")) return;
-    data.tasks = [];
-    saveData(data);
-    renderTasks();
+    els.clearTasks.addEventListener("click", () => {
+    // Clear only the input fields (does NOT delete tasks)
+    els.taskTitle.value = "";
+    els.taskDetails.value = "";
+    els.taskType.value = "Homework";
+    els.dueDate.value = isoToday();
+    els.taskStatus.value = "todo";
   });
 
   // TASK FILTER chips
