@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My School Tracker</title>
+  <style>
+  :root{
+    --bg: #f6f8fb;
+    --panel: #ffffff;
+    --panel2: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --input: #ffffff;
+    --focus: #2563eb;
+
+    --good: #16a34a;
+    --warn: #ca8a04;
+    --bad:  #dc2626;
+
+    --chip: #f1f5f9;
+    --chipActive: #e0e7ff;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  .wrap{
+    max-width: 1100px;
+    margin: 22px auto;
+    padding: 0 16px 28px;
+  }
+
+  h1{ margin: 0 0 6px; font-size: 28px; }
+  .subtitle{ margin: 0 0 18px; color: var(--muted); }
+
+  .grid{
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 980px){
+    .grid{ grid-template-columns: 1fr 1fr; }
+  }
+
+  .card{
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    min-width: 0;
+  }
+
+  h2{ margin: 2px 0 12px; font-size: 18px; }
+  label{ display:block; font-weight: 600; margin: 10px 0 6px; }
+
+  input, textarea, select{
+    width: 100%;
+    border: 1px solid var(--border);
+    background: var(--input);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font: inherit;
+    outline: none;
+    min-width: 0;
+  }
+
+  input:focus, textarea:focus, select:focus{
+    border-color: var(--focus);
+    box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+  }
+
+  textarea{ min-height: 120px; resize: vertical; }
+
+  .row{
+    display:flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: end;
+  }
+  .row > .field{
+    flex: 1 1 180px;
+    min-width: 180px;
+  }
+
+  .actions{
+    display:flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  button{
+    border: 1px solid var(--border);
+    background: #f9fafb;
+    color: var(--text);
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font: inherit;
+  }
+  button:hover{ background: #f3f4f6; }
+
+  button.primary{
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+  }
+
+  .small{ font-size: 12px; color: var(--muted); margin: 10px 0 0; }
+  .list{ list-style: none; padding: 0; margin: 10px 0 0; }
+
+  .item{
+    border: 1px solid var(--border);
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin: 10px 0;
+  }
+
+  .item h3{ margin: 0 0 4px; font-size: 15px; }
+  .meta{ font-size: 12px; color: var(--muted); display:flex; gap:10px; flex-wrap: wrap; }
+
+  .pill{
+    display:inline-flex;
+    align-items:center;
+    gap: 6px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: #f8fafc;
+    font-size: 12px;
+  }
+
+  .pill.good{ background: #dcfce7; color: #166534; border-color: #86efac; }
+  .pill.warn{ background: #fef3c7; color: #854d0e; border-color: #fde68a; }
+  .pill.bad{  background: #fee2e2; color: #7f1d1d; border-color: #fecaca; }
+
+  .chips{
+    display:flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 10px 0 0;
+  }
+
+  .chip{
+    border: 1px solid var(--border);
+    background: var(--chip);
+    padding: 7px 10px;
+    border-radius: 999px;
+    cursor:pointer;
+    font-size: 13px;
+  }
+
+  .chip.active{
+    background: var(--chipActive);
+    border-color: #c7d2fe;
+  }
+
+  details{
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #ffffff;
+    padding: 8px 10px;
+    margin-top: 10px;
+  }
+
+  summary{
+    cursor: pointer;
+    font-weight: 600;
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  summary::-webkit-details-marker{ display:none; }
+
+  .countBadge{
+    font-size: 12px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 2px 8px;
+    background: #f9fafb;
+    white-space: nowrap;
+  }
+
+  .inlineBtns{
+    display:flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .inlineBtns button{
+    padding: 8px 10px;
+    border-radius: 9px;
+  }
+
+  .dividerTitle{
+    margin: 0 0 8px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+</style>
+
+</head>
+
+<body>
+  <div class="wrap">
+    <h1>My School Tracker</h1>
+    <p class="subtitle">Dark mode • Daily learning log • Homework/test planner (saved on this device)</p>
+
+    <div class="grid">
+      <!-- Daily Entry -->
+      <div class="card">
+        <h2>Daily Entry</h2>
+
+        <div class="row">
+          <div class="field">
+            <label for="date">Date</label>
+            <input id="date" type="date" />
+          </div>
+          <div class="field">
+            <label for="subject">Subject</label>
+            <input id="subject" placeholder="e.g., Math, Biology, History" />
+          </div>
+        </div>
+
+        <label for="learned">What I learned today</label>
+        <textarea id="learned" placeholder="Key ideas, summaries, formulas, etc."></textarea>
+
+        <label for="notes">Extra notes</label>
+        <textarea id="notes" placeholder="Reminders, questions, links, etc."></textarea>
+
+        <div class="actions">
+          <button class="primary" id="saveEntry">Save entry</button>
+          <button id="clearEntry">Clear fields</button>
+        </div>
+
+        <p class="small">
+          Tip: data is stored in your browser (localStorage). Use Export/Import to back up.
+        </p>
+      </div>
+
+      <!-- Planner -->
+      <div class="card">
+        <h2>Planner (Homework / Tests)</h2>
+
+        <label for="taskTitle">Task</label>
+        <input id="taskTitle" placeholder="e.g., Math worksheet, History quiz study" />
+
+        <div class="row">
+          <div class="field">
+            <label for="taskType">Type</label>
+            <select id="taskType">
+              <option>Homework</option>
+              <option>Test</option>
+              <option>Project</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="dueDate">Due date</label>
+            <input id="dueDate" type="date" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="taskStatus">Status</label>
+            <select id="taskStatus">
+              <option value="todo">To do</option>
+              <option value="ongoing">Ongoing</option>
+              <option value="done">Done</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="taskDetails">Details</label>
+        <textarea id="taskDetails" placeholder="What to do, pages, topics, checklist..."></textarea>
+
+        <div class="actions">
+          <button class="primary" id="addTask">Add task</button>
+          <button id="clearTasks">Delete all tasks</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Views -->
+    <div class="grid" style="margin-top:16px;">
+      <!-- Entries view -->
+      <div class="card">
+        <h2>Saved Entries</h2>
+
+        <div class="row">
+          <div class="field" style="flex: 1 1 280px; min-width: 240px;">
+            <label for="searchEntries">Search</label>
+            <input id="searchEntries" placeholder="Search entries (subject/notes/learned)..." />
+          </div>
+          <div class="field">
+            <label for="entryViewMode">View</label>
+            <select id="entryViewMode">
+              <option value="byDay">Group by Day</option>
+              <option value="bySubject">Group by Subject</option>
+              <option value="flat">Flat list</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button id="exportData">Export (JSON)</button>
+          <label style="margin:0; font-weight:650; color:var(--text);">
+            Import (JSON)
+            <input id="importFile" type="file" accept="application/json" style="display:block; margin-top:8px;" />
+          </label>
+        </div>
+
+        <div id="entriesContainer"></div>
+      </div>
+
+      <!-- Tasks view -->
+      <div class="card">
+        <h2>Upcoming Tasks</h2>
+
+        <div class="dividerTitle">Filter</div>
+        <div class="chips" id="taskFilters">
+          <div class="chip active" data-filter="all">All</div>
+          <div class="chip" data-filter="todo">To do</div>
+          <div class="chip" data-filter="ongoing">Ongoing</div>
+          <div class="chip" data-filter="done">Done</div>
+          <div class="chip" data-filter="late">Late</div>
+        </div>
+
+        <ul id="tasksList" class="list"></ul>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const LS_KEY = "schoolTrackerData_v2";
+
+  function loadData() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(LS_KEY));
+      if (parsed && typeof parsed === "object") {
+        return {
+          entries: Array.isArray(parsed.entries) ? parsed.entries : [],
+          tasks: Array.isArray(parsed.tasks) ? parsed.tasks : []
+        };
+      }
+      return { entries: [], tasks: [] };
+    } catch {
+      return { entries: [], tasks: [] };
+    }
+  }
+
+  function saveData(data) {
+    localStorage.setItem(LS_KEY, JSON.stringify(data));
+  }
+
+  function uid() {
+    return Math.random().toString(16).slice(2) + Date.now().toString(16);
+  }
+
+  function pad(n){ return String(n).padStart(2,"0"); }
+  function isoToday(){
+    const d = new Date();
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  }
+
+  function parseDate(iso){
+    if (!iso) return null;
+    const [y,m,d] = iso.split("-").map(Number);
+    if (!y || !m || !d) return null;
+    return new Date(y, m-1, d, 0,0,0,0);
+  }
+
+  function isLate(task){
+    if (!task.dueDate) return false;
+    if (task.status === "done") return false;
+    const due = parseDate(task.dueDate);
+    if (!due) return false;
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0,0);
+    return due < today;
+  }
+
+  function escapeHtml(str) {
+    return (str || "").replace(/[&<>"']/g, m => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[m]));
+  }
+
+  const els = {
+    date: document.getElementById("date"),
+    subject: document.getElementById("subject"),
+    learned: document.getElementById("learned"),
+    notes: document.getElementById("notes"),
+    saveEntry: document.getElementById("saveEntry"),
+    clearEntry: document.getElementById("clearEntry"),
+
+    taskTitle: document.getElementById("taskTitle"),
+    taskType: document.getElementById("taskType"),
+    dueDate: document.getElementById("dueDate"),
+    taskStatus: document.getElementById("taskStatus"),
+    taskDetails: document.getElementById("taskDetails"),
+    addTask: document.getElementById("addTask"),
+    clearTasks: document.getElementById("clearTasks"),
+
+    tasksList: document.getElementById("tasksList"),
+    taskFilters: document.getElementById("taskFilters"),
+
+    searchEntries: document.getElementById("searchEntries"),
+    entryViewMode: document.getElementById("entryViewMode"),
+    entriesContainer: document.getElementById("entriesContainer"),
+
+    exportData: document.getElementById("exportData"),
+    importFile: document.getElementById("importFile"),
+  };
+
+  // defaults
+  els.date.value = isoToday();
+  els.dueDate.value = isoToday();
+
+  let data = loadData();
+  let activeTaskFilter = "all";
+
+  // ENTRY: Save
+  els.saveEntry.addEventListener("click", () => {
+    const entry = {
+      id: uid(),
+      date: els.date.value || isoToday(),
+      subject: els.subject.value.trim(),
+      learned: els.learned.value.trim(),
+      notes: els.notes.value.trim(),
+      createdAt: Date.now()
+    };
+
+    if (!entry.subject && !entry.learned && !entry.notes) return;
+
+    data.entries.push(entry);
+    saveData(data);
+    renderEntries();
+  });
+
+  els.clearEntry.addEventListener("click", () => {
+    els.subject.value = "";
+    els.learned.value = "";
+    els.notes.value = "";
+  });
+
+  // TASK: Add
+  els.addTask.addEventListener("click", () => {
+    const task = {
+      id: uid(),
+      title: els.taskTitle.value.trim(),
+      type: els.taskType.value,
+      dueDate: els.dueDate.value,
+      status: els.taskStatus.value, // todo | ongoing | done
+      details: els.taskDetails.value.trim(),
+      createdAt: Date.now()
+    };
+
+    if (!task.title && !task.details) return;
+
+    data.tasks.push(task);
+    saveData(data);
+
+    els.taskTitle.value = "";
+    els.taskDetails.value = "";
+    els.taskStatus.value = "todo";
+
+    renderTasks();
+  });
+
+  els.clearTasks.addEventListener("click", () => {
+    if (!confirm("Delete ALL tasks?")) return;
+    data.tasks = [];
+    saveData(data);
+    renderTasks();
+  });
+
+  // TASK FILTER chips
+  els.taskFilters.addEventListener("click", (ev) => {
+    const chip = ev.target.closest(".chip");
+    if (!chip) return;
+
+    activeTaskFilter = chip.dataset.filter;
+
+    [...els.taskFilters.querySelectorAll(".chip")].forEach(c => c.classList.remove("active"));
+    chip.classList.add("active");
+    renderTasks();
+  });
+
+  function statusPill(task){
+    // Late has priority (unless done)
+    if (isLate(task)) return `<span class="pill bad">Late</span>`;
+    if (task.status === "done") return `<span class="pill good">Done</span>`;
+    if (task.status === "ongoing") return `<span class="pill warn">Ongoing</span>`;
+    return `<span class="pill">To do</span>`;
+  }
+
+  function matchesTaskFilter(task){
+    const late = isLate(task);
+    if (activeTaskFilter === "all") return true;
+    if (activeTaskFilter === "late") return late;
+    if (activeTaskFilter === "todo") return task.status === "todo" && !late;
+    if (activeTaskFilter === "ongoing") return task.status === "ongoing" && !late;
+    if (activeTaskFilter === "done") return task.status === "done";
+    return true;
+  }
+
+  function renderTasks(){
+    const tasks = [...data.tasks].sort((a,b) => {
+      // sort by due date, then status, then createdAt
+      const ad = a.dueDate || "9999-99-99";
+      const bd = b.dueDate || "9999-99-99";
+      if (ad !== bd) return ad.localeCompare(bd);
+      const order = { todo: 0, ongoing: 1, done: 2 };
+      if ((order[a.status] ?? 9) !== (order[b.status] ?? 9)) return (order[a.status] ?? 9) - (order[b.status] ?? 9);
+      return (a.createdAt ?? 0) - (b.createdAt ?? 0);
+    });
+
+    const shown = tasks.filter(matchesTaskFilter);
+
+    els.tasksList.innerHTML = "";
+    if (!shown.length){
+      els.tasksList.innerHTML = `<li class="small">No tasks in this filter.</li>`;
+      return;
+    }
+
+    for (const t of shown){
+      const li = document.createElement("li");
+      li.className = "item";
+
+      const due = t.dueDate ? `Due: ${t.dueDate}` : "No due date";
+      const type = t.type ? t.type : "Task";
+
+      li.innerHTML = `
+        <h3>${escapeHtml(t.title || "(No title)")}</h3>
+        <div class="meta">
+          <span class="pill">${escapeHtml(type)}</span>
+          <span class="pill">${escapeHtml(due)}</span>
+          ${statusPill(t)}
+        </div>
+        ${t.details ? `<div style="margin-top:8px; color: var(--text);">${escapeHtml(t.details).replaceAll("\n","<br>")}</div>` : ""}
+        <div class="inlineBtns">
+          <button data-set="${t.id}" data-status="todo">To do</button>
+          <button data-set="${t.id}" data-status="ongoing">Ongoing</button>
+          <button data-set="${t.id}" data-status="done">Done</button>
+          <button data-del-task="${t.id}">Delete</button>
+        </div>
+      `;
+      els.tasksList.appendChild(li);
+    }
+  }
+
+  // Task status change + delete
+  els.tasksList.addEventListener("click", (ev) => {
+    const btn = ev.target.closest("button");
+    if (!btn) return;
+
+    const delId = btn.getAttribute("data-del-task");
+    const setId = btn.getAttribute("data-set");
+    const newStatus = btn.getAttribute("data-status");
+
+    if (delId){
+      data.tasks = data.tasks.filter(t => t.id !== delId);
+      saveData(data);
+      renderTasks();
+      return;
+    }
+
+    if (setId && newStatus){
+      const t = data.tasks.find(x => x.id === setId);
+      if (!t) return;
+      t.status = newStatus;
+      saveData(data);
+      renderTasks();
+      return;
+    }
+  });
+
+  // ENTRIES VIEW
+  els.searchEntries.addEventListener("input", renderEntries);
+  els.entryViewMode.addEventListener("change", renderEntries);
+
+  function filterEntries(){
+    const q = els.searchEntries.value.trim().toLowerCase();
+    const entries = [...data.entries].sort((a,b) => (b.date||"").localeCompare(a.date||"") || (b.createdAt||0)-(a.createdAt||0));
+    if (!q) return entries;
+
+    return entries.filter(e =>
+      (e.subject||"").toLowerCase().includes(q) ||
+      (e.learned||"").toLowerCase().includes(q) ||
+      (e.notes||"").toLowerCase().includes(q)
+    );
+  }
+
+  function entryCard(e){
+    return `
+      <div class="item">
+        <h3>${escapeHtml(e.subject || "(No subject)")} — ${escapeHtml(e.date || "")}</h3>
+        <div class="meta">
+          <span class="pill">Entry</span>
+        </div>
+        ${e.learned ? `<div style="margin-top:8px;"><strong>Learned:</strong><br>${escapeHtml(e.learned).replaceAll("\n","<br>")}</div>` : ""}
+        ${e.notes ? `<div style="margin-top:8px;"><strong>Notes:</strong><br>${escapeHtml(e.notes).replaceAll("\n","<br>")}</div>` : ""}
+        <div class="inlineBtns">
+          <button data-edit="${e.id}">Edit</button>
+          <button data-del="${e.id}">Delete</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function groupBy(arr, keyFn){
+    const map = new Map();
+    for (const item of arr){
+      const k = keyFn(item) || "(Uncategorized)";
+      if (!map.has(k)) map.set(k, []);
+      map.get(k).push(item);
+    }
+    return map;
+  }
+
+  function renderEntries(){
+    const entries = filterEntries();
+    const mode = els.entryViewMode.value;
+
+    els.entriesContainer.innerHTML = "";
+
+    if (!entries.length){
+      els.entriesContainer.innerHTML = `<p class="small">No entries yet.</p>`;
+      return;
+    }
+
+    if (mode === "flat"){
+      const ul = document.createElement("div");
+      ul.innerHTML = entries.map(entryCard).join("");
+      els.entriesContainer.appendChild(ul);
+      return;
+    }
+
+    if (mode === "byDay"){
+      const grouped = groupBy(entries, e => e.date || "(No date)");
+      // Sort day keys desc
+      const keys = [...grouped.keys()].sort((a,b) => (b||"").localeCompare(a||""));
+      for (const day of keys){
+        const list = grouped.get(day);
+        const details = document.createElement("details");
+        details.open = keys.indexOf(day) === 0; // open most recent
+        details.innerHTML = `
+          <summary>
+            <span>${escapeHtml(day)}</span>
+            <span class="countBadge">${list.length} entr${list.length===1?"y":"ies"}</span>
+          </summary>
+          <div>${list.map(entryCard).join("")}</div>
+        `;
+        els.entriesContainer.appendChild(details);
+      }
+      return;
+    }
+
+    if (mode === "bySubject"){
+      const grouped = groupBy(entries, e => (e.subject || "(No subject)").trim());
+      const keys = [...grouped.keys()].sort((a,b)=> a.localeCompare(b));
+      for (const subj of keys){
+        const list = grouped.get(subj);
+        const details = document.createElement("details");
+        details.innerHTML = `
+          <summary>
+            <span>${escapeHtml(subj)}</span>
+            <span class="countBadge">${list.length} entr${list.length===1?"y":"ies"}</span>
+          </summary>
+          <div>${list.map(entryCard).join("")}</div>
+        `;
+        els.entriesContainer.appendChild(details);
+      }
+    }
+  }
+
+  // Entry edit/delete (delegation across container)
+  els.entriesContainer.addEventListener("click", (ev) => {
+    const btn = ev.target.closest("button");
+    if (!btn) return;
+
+    const editId = btn.getAttribute("data-edit");
+    const delId  = btn.getAttribute("data-del");
+
+    if (delId){
+      data.entries = data.entries.filter(e => e.id !== delId);
+      saveData(data);
+      renderEntries();
+      return;
+    }
+
+    if (editId){
+      const e = data.entries.find(x => x.id === editId);
+      if (!e) return;
+      // Load into fields and remove old entry (simple edit flow)
+      els.date.value = e.date || els.date.value;
+      els.subject.value = e.subject || "";
+      els.learned.value = e.learned || "";
+      els.notes.value = e.notes || "";
+      data.entries = data.entries.filter(x => x.id !== editId);
+      saveData(data);
+      renderEntries();
+    }
+  });
+
+  // Export / Import (still the same idea - keep it!)
+  els.exportData.addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "school-tracker-backup.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  els.importFile.addEventListener("change", async () => {
+    const file = els.importFile.files?.[0];
+    if (!file) return;
+    const text = await file.text();
+    try {
+      const imported = JSON.parse(text);
+      if (!imported || typeof imported !== "object") throw new Error("bad");
+      data = {
+        entries: Array.isArray(imported.entries) ? imported.entries : [],
+        tasks: Array.isArray(imported.tasks) ? imported.tasks : []
+      };
+      saveData(data);
+      renderEntries();
+      renderTasks();
+      alert("Imported successfully!");
+    } catch {
+      alert("Import failed. That file doesn't look like a valid backup.");
+    } finally {
+      els.importFile.value = "";
+    }
+  });
+
+  // initial render
+  renderEntries();
+  renderTasks();
+</script>
+</body>
+</html>
